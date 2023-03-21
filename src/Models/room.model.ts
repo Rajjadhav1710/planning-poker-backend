@@ -8,4 +8,5 @@ export interface Room{
     votingDecks: string[][];
     averageVote: string;
     agreement: string;
+    allCardsRevealed: boolean;
 }
