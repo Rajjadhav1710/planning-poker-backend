@@ -1,3 +1,5 @@
+import { Room } from "./Models/room.model";
+import { User } from "./Models/user.model";
 import { AllRoomDataService } from "./Services/all-room-data.service";
 
 const express = require('express');
@@ -31,6 +33,30 @@ io.on('connection', (socket: any) => {
         allRoomDataService.createRoom(roomDetails);
 
         callBack();
+    });
+
+    socket.on('join-room',( roomId: string, newUser: User, callBack: any )=>{
+
+        let roomIndex: number = allRoomDataService.getRoomIndex(roomId);
+
+        if(roomIndex === -1){
+            console.log("Room not found");
+        }else{
+            // connect socket
+            socket.join(roomId);
+
+            // add user to room ( on server )
+            allRoomDataService.joinRoom(roomId, newUser);
+
+            // return room object to the user which newly connected ( unicast )
+            let joinedRoom: Room = allRoomDataService.getRoomByRoomIndex(roomIndex);
+            socket.emit('room-details', joinedRoom);
+            
+            // new user event ( broadcast except the new user )
+            socket.broadcast.to(roomId).emit('new-user', newUser);
+        }
+
+        // callBack();
     });
 
     socket.on('disconnect', () => {
