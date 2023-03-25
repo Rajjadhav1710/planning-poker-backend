@@ -52,11 +52,55 @@ io.on('connection', (socket: any) => {
             let joinedRoom: Room = allRoomDataService.getRoomByRoomIndex(roomIndex);
             socket.emit('room-details', joinedRoom);
             
-            // new user event ( broadcast except the new user )
+            // new user event ( broadcast to room except the new user )
             socket.broadcast.to(roomId).emit('new-user', newUser);
         }
 
         // callBack();
+    });
+
+    socket.on('give-vote',( voteDetails : {
+        roomId: string,
+        userId: string,
+        vote: string,
+        votingStatus: boolean
+    }) => {
+        //update user of server's room instance
+        allRoomDataService.updateRoomUserVote(voteDetails);
+
+        //update user of client's room instance (broadcast to a room)
+        io.to(voteDetails.roomId).emit('receive-vote', voteDetails);
+
+    });
+
+    socket.on('revoke-vote',( voteDetails : {
+        roomId: string,
+        userId: string,
+        vote: string,
+        votingStatus: boolean
+    }) => {
+        //update user of server's room instance
+        allRoomDataService.updateRoomUserVote(voteDetails);
+
+        //update user of client's room instance (broadcast to a room)
+        io.to(voteDetails.roomId).emit('revoke-vote', voteDetails);
+
+    });
+
+    socket.on('reveal-cards',( roomId: string ) => {
+        //update server's room instance
+        allRoomDataService.revealRoomCards(roomId);
+
+        //update client's room instance (broadcast to a room)
+        io.to(roomId).emit('reveal-cards');
+    });
+
+    socket.on('start-new-voting',( roomId: string ) => {
+        //update server's room instance
+        // TODO: reset room state
+
+        //update client's room instance (broadcast to a room)
+        io.to(roomId).emit('start-new-voting');
     });
 
     socket.on('disconnect', () => {

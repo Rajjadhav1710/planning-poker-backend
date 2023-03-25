@@ -43,5 +43,30 @@ class AllRoomDataService {
             console.log("new user joined, roomId : ", roomId, "\nUser : ", newUser);
         }
     }
+    updateRoomUserVote(voteDetails) {
+        let roomIndex = this.getRoomIndex(voteDetails.roomId);
+        if (roomIndex === -1) {
+            console.log("Room not found");
+        }
+        else {
+            let user = this.rooms[roomIndex].activeUsers.filter(user => user.userId === voteDetails.userId)[0];
+            if (user === undefined) {
+                console.log("User not found");
+            }
+            else {
+                user.votingStatus = voteDetails.votingStatus;
+                user.vote = voteDetails.vote;
+            }
+        }
+    }
+    revealRoomCards(roomId) {
+        let roomIndex = this.getRoomIndex(roomId);
+        if (roomIndex === -1) {
+            console.log("Room not found");
+        }
+        else {
+            this.rooms[roomIndex].allCardsRevealed = true;
+        }
+    }
 }
 exports.AllRoomDataService = AllRoomDataService;
