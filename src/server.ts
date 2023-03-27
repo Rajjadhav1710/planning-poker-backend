@@ -20,14 +20,14 @@ app.get('/',(req: any, res: any)=>{
 const allRoomDataService = new AllRoomDataService();
 
 io.on('connection', (socket: any) => {
-    console.log('a user connected :',socket.id);
+    console.log('a user connected with socket id :',socket.id);
 
     socket.on('create-room',( roomDetails : { 
         roomId: string, 
         roomName: string, 
         votingSystem: string 
       }, callBack : any )=>{
-        console.log("on event : create-room","\nData : ", roomDetails);
+        console.log("on event : create-room","\nroomDetails : ", roomDetails);
 
         // create new room through AllRoomDataService
         allRoomDataService.createRoom(roomDetails);
@@ -36,6 +36,7 @@ io.on('connection', (socket: any) => {
     });
 
     socket.on('join-room',( roomId: string, newUser: User, callBack: any )=>{
+        console.log("on event : join-room","\nData : \nroomId : ",roomId,"\nnewUser : ",newUser);
 
         let roomIndex: number = allRoomDataService.getRoomIndex(roomId);
 
@@ -65,6 +66,8 @@ io.on('connection', (socket: any) => {
         vote: string,
         votingStatus: boolean
     }) => {
+        console.log("on event : give-vote","\nvoteDetails : ", voteDetails);
+
         //update user of server's room instance
         allRoomDataService.updateRoomUserVote(voteDetails);
 
@@ -79,6 +82,8 @@ io.on('connection', (socket: any) => {
         vote: string,
         votingStatus: boolean
     }) => {
+        console.log("on event : revoke-vote","\nvoteDetails : ", voteDetails);
+
         //update user of server's room instance
         allRoomDataService.updateRoomUserVote(voteDetails);
 
@@ -88,6 +93,8 @@ io.on('connection', (socket: any) => {
     });
 
     socket.on('reveal-cards',( roomId: string ) => {
+        console.log("on event : reveal-cards","\nroomId : ", roomId);
+
         //update server's room instance
         allRoomDataService.revealRoomCards(roomId);
 
@@ -96,10 +103,13 @@ io.on('connection', (socket: any) => {
     });
 
     socket.on('start-new-voting',( roomId: string ) => {
-        //update server's room instance
-        // TODO: reset room state
+        console.log("on event : start-new-voting","\nroomId : ", roomId);
 
-        //update client's room instance (broadcast to a room)
+        // update server's room instance
+        // reset room state
+        allRoomDataService.startNewVoting(roomId);
+
+        // update client's room instance (broadcast to a room)
         io.to(roomId).emit('start-new-voting');
     });
 

@@ -14,14 +14,15 @@ app.get('/', (req, res) => {
 });
 const allRoomDataService = new all_room_data_service_1.AllRoomDataService();
 io.on('connection', (socket) => {
-    console.log('a user connected :', socket.id);
+    console.log('a user connected with socket id :', socket.id);
     socket.on('create-room', (roomDetails, callBack) => {
-        console.log("on event : create-room", "\nData : ", roomDetails);
+        console.log("on event : create-room", "\nroomDetails : ", roomDetails);
         // create new room through AllRoomDataService
         allRoomDataService.createRoom(roomDetails);
         callBack();
     });
     socket.on('join-room', (roomId, newUser, callBack) => {
+        console.log("on event : join-room", "\nData : \nroomId : ", roomId, "\nnewUser : ", newUser);
         let roomIndex = allRoomDataService.getRoomIndex(roomId);
         if (roomIndex === -1) {
             console.log("Room not found");
@@ -40,27 +41,32 @@ io.on('connection', (socket) => {
         // callBack();
     });
     socket.on('give-vote', (voteDetails) => {
+        console.log("on event : give-vote", "\nvoteDetails : ", voteDetails);
         //update user of server's room instance
         allRoomDataService.updateRoomUserVote(voteDetails);
         //update user of client's room instance (broadcast to a room)
         io.to(voteDetails.roomId).emit('receive-vote', voteDetails);
     });
     socket.on('revoke-vote', (voteDetails) => {
+        console.log("on event : revoke-vote", "\nvoteDetails : ", voteDetails);
         //update user of server's room instance
         allRoomDataService.updateRoomUserVote(voteDetails);
         //update user of client's room instance (broadcast to a room)
         io.to(voteDetails.roomId).emit('revoke-vote', voteDetails);
     });
     socket.on('reveal-cards', (roomId) => {
+        console.log("on event : reveal-cards", "\nroomId : ", roomId);
         //update server's room instance
         allRoomDataService.revealRoomCards(roomId);
         //update client's room instance (broadcast to a room)
         io.to(roomId).emit('reveal-cards');
     });
     socket.on('start-new-voting', (roomId) => {
-        //update server's room instance
-        // TODO: reset room state
-        //update client's room instance (broadcast to a room)
+        console.log("on event : start-new-voting", "\nroomId : ", roomId);
+        // update server's room instance
+        // reset room state
+        allRoomDataService.startNewVoting(roomId);
+        // update client's room instance (broadcast to a room)
         io.to(roomId).emit('start-new-voting');
     });
     socket.on('disconnect', () => {
