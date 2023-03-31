@@ -2,6 +2,10 @@ import { Room } from "./Models/room.model";
 import { User } from "./Models/user.model";
 import { AllRoomDataService } from "./Services/all-room-data.service";
 
+require("dotenv").config();
+
+const path = require("path");
+
 const express = require('express');
 const app = express();
 
@@ -12,6 +16,21 @@ const io = require('socket.io')(http,{
         origin: '*'
     }
 });
+
+//CORS Setup
+const cors = require('cors');
+const corsOptions = {
+    origin : process.env.ALLOWED_CLIENTS?.split(',')
+    // origin will be an array : ['http://localhost:3000','http://localhost:5000']
+};
+
+//Middleware Setup
+app.use(express.json());// to parse JSON post bodies
+app.use(cors(corsOptions));
+
+//Routes
+app.use("/api/email",require(path.join(__dirname,"Routes","email")));
+
 
 app.get('/',(req: any, res: any)=>{
     res.send('<h1>Hello World!</h1>');

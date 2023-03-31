@@ -1,6 +1,9 @@
 "use strict";
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const all_room_data_service_1 = require("./Services/all-room-data.service");
+require("dotenv").config();
+const path = require("path");
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -9,6 +12,17 @@ const io = require('socket.io')(http, {
         origin: '*'
     }
 });
+//CORS Setup
+const cors = require('cors');
+const corsOptions = {
+    origin: (_a = process.env.ALLOWED_CLIENTS) === null || _a === void 0 ? void 0 : _a.split(',')
+    // origin will be an array : ['http://localhost:3000','http://localhost:5000']
+};
+//Middleware Setup
+app.use(express.json()); // to parse JSON post bodies
+app.use(cors(corsOptions));
+//Routes
+app.use("/api/email", require(path.join(__dirname, "Routes", "email")));
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>');
 });
