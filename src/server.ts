@@ -133,7 +133,21 @@ io.on('connection', (socket: any) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('a user disconnected :',socket.id);
+        console.log('a user disconnected (on event : disconnect) :',socket.id);
+
+        //socket.id is userId
+        let roomId: string = allRoomDataService.getRoomIdByUsingUserId(socket.id);
+
+        if(roomId === ""){
+            console.log("Room not found");
+        }else{
+            // remove user from room ( on server )
+            allRoomDataService.removeUser(roomId, socket.id);
+            
+            // remove user event ( broadcast to room except the old user )
+            socket.broadcast.to(roomId).emit('remove-user', socket.id);
+        }
+
     });
 });
 

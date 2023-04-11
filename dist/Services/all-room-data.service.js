@@ -116,5 +116,47 @@ class AllRoomDataService {
             this.rooms[roomIndex].allCardsRevealed = false;
         }
     }
+    getRoomIdByUsingUserId(userId) {
+        let roomId = "";
+        for (let i = 0; i < this.rooms.length; i++) {
+            for (let j = 0; j < this.rooms[i].activeUsers.length; j++) {
+                if (this.rooms[i].activeUsers[j].userId === userId) {
+                    roomId = this.rooms[i].roomId;
+                }
+            }
+        }
+        return roomId;
+    }
+    removeUser(roomId, userId) {
+        console.log("Executed removeUser : AllRoomDataService");
+        console.log(`roomId - ${roomId} userId - ${userId} : AllRoomDataService`);
+        let roomIndex = this.getRoomIndex(roomId);
+        if (roomIndex === -1) {
+            console.log("Room not found (removeUser : AllRoomDataService)");
+        }
+        else {
+            this.rooms[roomIndex].activeUsers = this.rooms[roomIndex].activeUsers.filter(user => user.userId !== userId);
+            if (this.rooms[roomIndex].activeUsers.length === 0) {
+                //delete room details
+                console.log(`Deleted room - ${roomId} because no active users (removeUser : AllRoomDataService)`);
+                this.rooms = this.rooms.filter(room => room.roomId !== roomId);
+            }
+            else {
+                let isThereAnyAdmin = false;
+                for (const user of this.rooms[roomIndex].activeUsers) {
+                    if (user.isAdmin) {
+                        isThereAnyAdmin = true;
+                        break;
+                    }
+                }
+                if (!isThereAnyAdmin) {
+                    //Randomly choose any one as admin
+                    // let userIndex: number = Math.floor(Math.random() * this.rooms[roomIndex].activeUsers.length);
+                    console.log(`Selected new admin with userId - ${this.rooms[roomIndex].activeUsers[0].userId} for roomId - ${roomId} : (removeUser : AllRoomDataService)`);
+                    this.rooms[roomIndex].activeUsers[0].isAdmin = true;
+                }
+            }
+        }
+    }
 }
 exports.AllRoomDataService = AllRoomDataService;
