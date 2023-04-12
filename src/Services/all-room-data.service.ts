@@ -21,7 +21,9 @@ export class AllRoomDataService {
             votingSystem: roomDetails.votingSystem,
             activeUsers: [],
             votingDecks: [
-                ["0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?"]
+                ["0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?"],
+                ["0", "0.5", "1", "2", "3", "5", "8", "13", "20", "40", "100", "?"],
+                ["0", "1", "2", "4", "8", "16", "32", "64", "?"]
             ], // string[][]
             averageVote: "",
             agreement: "",
@@ -109,10 +111,59 @@ export class AllRoomDataService {
 
         averageVote = totalVote/totalUsersVotted;
 
-        return averageVote.toString();
+        return averageVote.toFixed(2);
+    }
+
+    // returns coefficient of variation
+    getCV(voteWithFrequencyArray: { // calculates disagreement in percentage
+        vote: string; // X
+        frequency: number; // f
+    }[]): number {
+        let sum_f: number = 0;
+        let sum_fX: number = 0;
+    
+        for (const item of voteWithFrequencyArray) {
+            if(item.vote !== '?'){
+                sum_f += item.frequency;
+                sum_fX += (Number(item.vote)*item.frequency);
+            }
+        }
+
+        let mean: number = sum_fX / sum_f;
+        console.log(mean);    
+        let sum_fx2: number = 0;
+
+        for (const item of voteWithFrequencyArray) {
+            if(item.vote !== '?'){
+                sum_fx2 += ((Number(item.vote)-mean)*(Number(item.vote)-mean)*item.frequency);
+            }
+        }
+
+        let standardDeviation: number = Math.sqrt(sum_fx2/sum_f);
+
+        let coefficientOfVariation: number = (standardDeviation / mean)*100;
+
+        return Number(coefficientOfVariation.toFixed(2));
     }
 
     calculateAgreement( roomId: string ): string {
+        console.log("Executed calculateAgreement : AllRoomDataService");
+
+        let roomIndex: number = this.getRoomIndex(roomId);
+
+        if(roomIndex === -1){
+            console.log("Room not found (calculateAgreement : AllRoomDataService)");
+        }else{
+            let voteWithFrequencyArray: {
+                vote: string; // X
+                frequency: number; // f
+            }[] = this.getVoteWithFrequency(roomId);
+          
+            console.log(voteWithFrequencyArray);
+          
+            return ""+(100 - this.getCV(voteWithFrequencyArray));
+        }
+
         return "50%";
     }
 
@@ -200,5 +251,42 @@ export class AllRoomDataService {
                 }
             }
         }
+    }
+
+    getVoteWithFrequency(roomId: string): {
+        vote: string;
+        frequency: number;
+    }[]{
+
+        let roomIndex: number = this.getRoomIndex(roomId);
+
+        let result: {
+            vote: string;
+            frequency: number;
+        }[] = [];
+
+        if(roomIndex === -1){
+            console.log("Room not found (getVoteWithFrequency : AllRoomDataService)");
+        }else{
+            for(let i=0; i<this.rooms[roomIndex].activeUsers.length; i++){
+                if(this.rooms[roomIndex].activeUsers[i].votingStatus === true){
+                  let searchedItem: {
+                    vote: string;
+                    frequency: number;
+                  } | undefined = result.find( r => r.vote === this.rooms[roomIndex].activeUsers[i].vote);
+          
+                  if(searchedItem){
+                    searchedItem.frequency++;
+                  }else{
+                    result.push({
+                      vote: this.rooms[roomIndex].activeUsers[i].vote,
+                      frequency: 1
+                    });
+                  }
+                }
+            }
+        }
+
+        return result;
     }
 }
