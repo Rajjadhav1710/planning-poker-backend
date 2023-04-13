@@ -69,23 +69,27 @@ export class AllRoomDataService {
         userId: string,
         vote: string,
         votingStatus: boolean
-    }): void {
+    }): number {// returns status of update : 0 = success, -1 = error
         console.log("Executed updateRoomUserVote : AllRoomDataService");
 
         let roomIndex: number = this.getRoomIndex(voteDetails.roomId);
 
         if(roomIndex === -1){
             console.log("Room not found (updateRoomUserVote : AllRoomDataService)");
+            return -1;
         }else{
             let user: User = this.rooms[roomIndex].activeUsers.filter(user => user.userId === voteDetails.userId)[0];
 
             if(user === undefined){
                 console.log("User not found (updateRoomUserVote : AllRoomDataService)");
+                return -1;
             }else{
                 user.votingStatus = voteDetails.votingStatus;
                 user.vote = voteDetails.vote;
             }
         }
+
+        return 0;
     }
 
     calculateAverageVote( roomId: string ): string {
@@ -167,13 +171,14 @@ export class AllRoomDataService {
         return "50%";
     }
 
-    revealRoomCards( roomId: string ): void {
+    revealRoomCards( roomId: string ): number {// returns status of update : 0 = success, -1 = error
         console.log("Executed revealRoomCards : AllRoomDataService");
         
         let roomIndex: number = this.getRoomIndex(roomId);
 
         if(roomIndex === -1){
             console.log("Room not found (revealRoomCards : AllRoomDataService)");
+            return -1;
         }else{
             this.rooms[roomIndex].allCardsRevealed = true;
             
@@ -181,15 +186,18 @@ export class AllRoomDataService {
             this.rooms[roomIndex].averageVote = this.calculateAverageVote(roomId);
             this.rooms[roomIndex].agreement = this.calculateAgreement(roomId); // hard coded
         }
+
+        return 0;
     }
 
-    startNewVoting( roomId: string ): void {
+    startNewVoting( roomId: string ): number {// returns status of update : 0 = success, -1 = error
         console.log("Executed startNewVoting : AllRoomDataService");
 
         let roomIndex: number = this.getRoomIndex(roomId);
 
         if(roomIndex === -1){
             console.log("Room not found (startNewVoting : AllRoomDataService)");
+            return -1;
         }else{
             // reset room state
             for (const user of this.rooms[roomIndex].activeUsers) {
@@ -200,6 +208,8 @@ export class AllRoomDataService {
             this.rooms[roomIndex].agreement = "";
             this.rooms[roomIndex].allCardsRevealed = false;
         }
+
+        return 0;
     }
 
     getRoomIdByUsingUserId(userId: string): string {

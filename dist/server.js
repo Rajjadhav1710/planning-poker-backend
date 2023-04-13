@@ -40,6 +40,8 @@ io.on('connection', (socket) => {
         let roomIndex = allRoomDataService.getRoomIndex(roomId);
         if (roomIndex === -1) {
             console.log("Room not found");
+            //unicast
+            socket.emit('room-not-found');
         }
         else {
             // connect socket
@@ -57,21 +59,36 @@ io.on('connection', (socket) => {
     socket.on('give-vote', (voteDetails) => {
         console.log("on event : give-vote", "\nvoteDetails : ", voteDetails);
         //update user of server's room instance
-        allRoomDataService.updateRoomUserVote(voteDetails);
+        let statusCode = allRoomDataService.updateRoomUserVote(voteDetails); // returns status of update : 0 = success, -1 = error
+        if (statusCode === -1) {
+            //unicast
+            socket.emit('room-not-found');
+            return;
+        }
         //update user of client's room instance (broadcast to a room)
         io.to(voteDetails.roomId).emit('receive-vote', voteDetails);
     });
     socket.on('revoke-vote', (voteDetails) => {
         console.log("on event : revoke-vote", "\nvoteDetails : ", voteDetails);
         //update user of server's room instance
-        allRoomDataService.updateRoomUserVote(voteDetails);
+        let statusCode = allRoomDataService.updateRoomUserVote(voteDetails); // returns status of update : 0 = success, -1 = error
+        if (statusCode === -1) {
+            //unicast
+            socket.emit('room-not-found');
+            return;
+        }
         //update user of client's room instance (broadcast to a room)
         io.to(voteDetails.roomId).emit('revoke-vote', voteDetails);
     });
     socket.on('reveal-cards', (roomId) => {
         console.log("on event : reveal-cards", "\nroomId : ", roomId);
         //update server's room instance
-        allRoomDataService.revealRoomCards(roomId);
+        let statusCode = allRoomDataService.revealRoomCards(roomId);
+        if (statusCode === -1) {
+            //unicast
+            socket.emit('room-not-found');
+            return;
+        }
         //update client's room instance (broadcast to a room)
         io.to(roomId).emit('reveal-cards');
     });
@@ -79,7 +96,12 @@ io.on('connection', (socket) => {
         console.log("on event : start-new-voting", "\nroomId : ", roomId);
         // update server's room instance
         // reset room state
-        allRoomDataService.startNewVoting(roomId);
+        let statusCode = allRoomDataService.startNewVoting(roomId);
+        if (statusCode === -1) {
+            //unicast
+            socket.emit('room-not-found');
+            return;
+        }
         // update client's room instance (broadcast to a room)
         io.to(roomId).emit('start-new-voting');
     });
@@ -88,7 +110,7 @@ io.on('connection', (socket) => {
         //socket.id is userId
         let roomId = allRoomDataService.getRoomIdByUsingUserId(socket.id);
         if (roomId === "") {
-            console.log("Room not found");
+            console.log("Room not found"); // only this one is not emitting room-not-found event
         }
         else {
             // remove user from room ( on server )
