@@ -4,4 +4,5 @@ export interface User{
     votingStatus: boolean;
     vote: string;
     isAdmin: boolean;
+    profileImageUrl: string;
 }
