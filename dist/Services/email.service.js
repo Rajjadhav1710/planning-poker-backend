@@ -24,7 +24,7 @@ function sendMail(mailInfo) {
         });
         //sending mail
         let info = yield transporter.sendMail({
-            from: `Brand-Name ${mailInfo.from}`,
+            from: `Planning Poker Online ${mailInfo.from}`,
             to: mailInfo.to,
             subject: mailInfo.subject,
             text: mailInfo.text,

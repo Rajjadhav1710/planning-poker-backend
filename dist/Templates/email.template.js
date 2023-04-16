@@ -6,7 +6,7 @@ module.exports = (templateData) => {
         <head>
             <meta name="viewport" content="width=device-width">
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-            <title>Planning Poker</title>
+            <title>Planning Poker Online</title>
             <style>
             /* -------------------------------------
                 INLINED WITH htmlemail.io/inline
@@ -115,8 +115,10 @@ module.exports = (templateData) => {
                             <tr>
                             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
                                 <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Hi there,</p>
-                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"><b>${templateData.emailFrom}</b> has invited you for planning poker.</p>
-                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"> in total ・ Expires in </p>
+                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"><b>${templateData.emailFrom}</b> has invited you for onlinr Planning Poker session.</p>
+                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Planning Poker is an estimation technique used in Agile project management to estimate the effort required for a particular task or project.</p>
+                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Our web-based application provides platform for teams to perform the estimation process remotely and privately.</p>
+                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Join the room to provide your valuable estimates.</p>
                                 <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
                                 <tbody>
                                     <tr>
@@ -148,8 +150,8 @@ module.exports = (templateData) => {
                     <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                         <tr>
                         <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
-                            <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">Planning Poker, share your votes. Near World Wide Web, Browser</span>
-                            <br> Want to share a vote? <a href="http://localhost:4200" style="text-decoration: underline; color: #999999; font-size: 12px; text-align: center;">Planning Poker</a>.
+                            <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">Planning Poker Online, Let's Estimate. Near World Wide Web, Browser</span>
+                            <br> Want to see how it works? <a href="http://localhost:4200" style="text-decoration: underline; color: #999999; font-size: 12px; text-align: center;">Planning Poker Online</a>.
                         </td>
                         </tr>
                         <tr>
