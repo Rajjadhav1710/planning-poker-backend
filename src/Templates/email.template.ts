@@ -117,7 +117,7 @@ module.exports = ( templateData : {
                             <tr>
                             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
                                 <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Hi there,</p>
-                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"><b>${templateData.emailFrom}</b> has invited you for onlinr Planning Poker session.</p>
+                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"><b>${templateData.emailFrom}</b> has invited you for online Planning Poker session.</p>
                                 <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Planning Poker is an estimation technique used in Agile project management to estimate the effort required for a particular task or project.</p>
                                 <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Our web-based application provides platform for teams to perform the estimation process remotely and privately.</p>
                                 <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Join the room to provide your valuable estimates.</p>

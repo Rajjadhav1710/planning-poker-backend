@@ -18,7 +18,7 @@ router.post("/", (req: any, res: any) => {
     sendMail({
         from : emailFrom,
         to : emailTo,
-        subject : "Subject",
+        subject : "Invitation for planning poker session",
         text : "text",
         html : require(path.join(__dirname,"..","Templates","email.template"))({
             emailFrom : emailFrom, 
